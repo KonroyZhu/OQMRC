@@ -133,7 +133,7 @@ if __name__ == '__main__':
     acc=0
     # 储存
     saver=tf.train.Saver()
-    """ 用于切换测试与运行模式
+    # """ 用于切换测试与运行模式
     print("正在测试feed_dict输入数据...")
     test_trainer(epoch, sess, test_op, tensor_dict)
     """
