@@ -69,7 +69,7 @@ class MwAN:
         self.W_g = self.random_weight(dim_in=4*opts["hidden_size"],dim_out=4*opts["hidden_size"],name="aggregate_gate")
 
         # aggregate attention
-        self.W_agg = self.random_weight(dim_in=2* opts["hidden_size"], dim_out=opts["hidden_size"],name="aggregate_att_w")
+        self.W_agg = self.random_weight(dim_in=4* opts["hidden_size"], dim_out=opts["hidden_size"],name="aggregate_att_w")
         self.V_agg = self.random_bias(dim= opts["hidden_size"],name="aggregate_att_b")
 
 
@@ -226,15 +226,16 @@ class MwAN:
                     xt=tf.concat([qt,h_p],axis=2) # (b,p,4h)
                     gt=tf.sigmoid(self.mat_weight_mul(xt,self.W_g)) # (b,p,4h) (4h,4h)
                     xt_star=tf.squeeze(tf.multiply(xt,gt)) # ( b,p,4h)
-
-                    fc=[self.DropoutWrappedLSTMCell(hidden_size=opts["hidden_size"],in_keep_prob=opts["dropout"]) for _ in range(2)]
-                    bc=[self.DropoutWrappedLSTMCell(hidden_size=opts["hidden_size"],in_keep_prob=opts["dropout"]) for _ in range(2)]
-
-                    xt_star_unstack=tf.unstack(xt_star,axis=1)
-                    ht,_,_=tf.contrib.rnn.stack_bidirectional_rnn(fc, bc, xt_star_unstack, dtype=tf.float32,
-                                                           scope="gating")
-                    ht=tf.stack(ht,axis=1)
-                    ht=tf.nn.dropout(ht,opts["dropout"])
+                    # FIXME: 计算能力提升后再添加此层
+                    # fc=[self.DropoutWrappedLSTMCell(hidden_size=opts["hidden_size"],in_keep_prob=opts["dropout"]) for _ in range(2)]
+                    # bc=[self.DropoutWrappedLSTMCell(hidden_size=opts["hidden_size"],in_keep_prob=opts["dropout"]) for _ in range(2)]
+                    #
+                    # xt_star_unstack=tf.unstack(xt_star,axis=1)
+                    # ht,_,_=tf.contrib.rnn.stack_bidirectional_rnn(fc, bc, xt_star_unstack, dtype=tf.float32,
+                    #                                        scope="gating")
+                    # ht=tf.stack(ht,axis=1)
+                    ht=xt_star
+                    ht=tf.nn.dropout(ht,opts["dropout"]) # ( b,p,4h)
                 print("shape: {}".format(ht))
                 return ht
             htc=get_x(qtc,"c_gate")
@@ -242,23 +243,22 @@ class MwAN:
             htd=get_x(qtd,"d_gate")
             htm=get_x(qtm,"m_gate")
             hts=get_x(qts,"s_gate") # (b,p,2h)
-            aggre=tf.concat([hts,h_p,htc,htb,htd,htm],axis=2) # (b,p,12h)
-            aggre_reshape=tf.reshape(aggre,shape=[opts["batch"],opts["p_len"]*6,-1]) # (b,p*6,2h)
+            aggre=tf.concat([hts,htc,htb,htd,htm],axis=2) # (b,p,10h)
+            aggre_reshape=tf.reshape(aggre,shape=[opts["batch"],opts["p_len"]*5,-1]) # (b,p*5,2h)
             print("aggre_reshaped: {}".format(aggre_reshape))
 
             # 公式9a-9c
-
-            tanh=tf.tanh(self.mat_weight_mul(aggre_reshape,self.W_agg))# (b,p*6,h)
-            sj=self.mat_weight_mul(tanh,tf.reshape(self.V_agg,shape=[-1,1])) # (b,p*6,1)
-            print(sj)
-            sj=tf.reshape(sj,[opts["batch"],opts["p_len"],6,-1])
-            sj=tf.transpose(sj,perm=[0,1,3,2])  # (b,p,1,6)
+            tanh=tf.tanh(self.mat_weight_mul(aggre_reshape,self.W_agg))# (b,p*5,h)
+            sj=self.mat_weight_mul(tanh,tf.reshape(self.V_agg,shape=[-1,1])) # (b,p*5,1)
+            # print(sj)
+            sj=tf.reshape(sj,[opts["batch"],opts["p_len"],5,-1])
+            sj=tf.transpose(sj,perm=[0,1,3,2])  # (b,p,1,5)
             aj=tf.nn.softmax(sj,axis=3)
-            aj=tf.reshape(aj,[opts["batch"],opts["p_len"],6,-1])
-            xt=tf.matmul(tf.reshape(aj,[opts["batch"]*opts["p_len"],-1,6]),tf.reshape(aggre_reshape,[opts["batch"]*opts["p_len"],6,-1])) # (b*p,1,6)*(b*p,6,2h) => (b*p,1,2h)
+            aj=tf.reshape(aj,[opts["batch"],opts["p_len"],5,-1])
+            xt=tf.matmul(tf.reshape(aj,[opts["batch"]*opts["p_len"],-1,5]),tf.reshape(aggre_reshape,[opts["batch"]*opts["p_len"],5,-1])) # (b*p,1,5)*(b*p,5,2h) => (b*p,1,2h)
             print("xt: {}".format(xt))
-            xt=tf.reshape(xt,[opts["batch"],opts["p_len"],1,2*opts["hidden_size"]])
-            xt=tf.squeeze(xt) # (b,p,2h)
+            xt=tf.reshape(xt,[opts["batch"],opts["p_len"],1,4*opts["hidden_size"]])
+            xt=tf.squeeze(xt) # (b,p,4h)
             print("xt: {}".format(xt))
 
             # aggregate=tf.concat([h_p, qts, qtc, qtd, qtb, qtm],axis=2) # (b,p,12h)

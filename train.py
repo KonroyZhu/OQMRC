@@ -122,8 +122,8 @@ def test(pred,session,tensor_dict):
     return r * 100.0 / a
 
 if __name__ == '__main__':
-    # model=MwAN()
-    model = R_Net()
+    model=MwAN()
+    # model = R_Net()
     loss, optimizer, predict, tensor_dict, test_op = model.build()
 
     best = 0.0
