@@ -92,8 +92,8 @@ def train(epoch,session,loss,optimizer,tensor_dict):
         try:
             _,l,p = session.run([optimizer,loss,predict],feed_dict=fd)
             if id_list == []: # Error: 'NoneType' object has no attribute 'extend' FIXME
-                id_list = ids
-                pred_list = p
+                id_list = list(ids)
+                pred_list = list(p)
             else:
                 id_list = id_list.extend(ids)
                 pred_list = pred_list.extend(p)
@@ -129,8 +129,8 @@ def test(pred,session,tensor_dict):
         }
         p = session.run([pred], feed_dict=fd)
         if id_list == []: #Error: 'NoneType' object has no attribute 'extend' Fixme
-            id_list=ids
-            pred_list=p
+            id_list=list(ids)
+            pred_list=list(p)
         else:
             id_list = id_list.extend(ids)
             pred_list = pred_list.extend(p)
