@@ -79,9 +79,9 @@ class MwAN:
 
         # placeholder
         #FIXME: batch should be changed to None
-        query=tf.placeholder(dtype=tf.int32,shape=[opts["batch"],opts["q_len"]])
-        para =tf.placeholder(dtype=tf.int32,shape=[opts["batch"],opts["p_len"]])
-        ans  =tf.placeholder(dtype=tf.int32,shape=[opts["batch"],3,opts["alt_len"]]) # 每个ans中有三个小句，第一句为正确答案 FIXME: alt_len should be None
+        query=tf.placeholder(dtype=tf.int32,shape=[opts["batch"],opts["q_len"]],name="query")
+        para =tf.placeholder(dtype=tf.int32,shape=[opts["batch"],opts["p_len"]],name="para")
+        ans  =tf.placeholder(dtype=tf.int32,shape=[opts["batch"],3,opts["alt_len"]],name="ans") # 每个ans中有三个小句，第一句为正确答案 FIXME: alt_len should be None
 
         # embedding
         with tf.variable_scope("Embedding_Encoding_Layer"):

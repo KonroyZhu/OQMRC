@@ -14,8 +14,8 @@
       <file leaf-file-name="MwAN_full.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/MwAN_full.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="69">
-              <caret line="322" column="76" selection-start-line="322" selection-start-column="76" selection-end-line="322" selection-end-column="76" />
+            <state relative-caret-position="378">
+              <caret line="80" column="8" selection-start-line="80" selection-start-column="8" selection-end-line="84" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -23,11 +23,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="R_Net.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="R_Net.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/R_Net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="83">
-              <caret line="227" column="76" selection-start-line="227" selection-start-column="76" selection-end-line="227" selection-end-column="76" />
+            <state relative-caret-position="218">
+              <caret line="83" selection-start-line="83" selection-end-line="83" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -38,8 +38,20 @@
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="147" column="9" selection-start-line="147" selection-start-column="9" selection-end-line="147" selection-end-column="9" />
+            <state relative-caret-position="461">
+              <caret line="154" column="4" selection-start-line="154" selection-start-column="4" selection-end-line="154" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="biDAF.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/model/biDAF.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="486">
+              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -69,11 +81,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/model/tensor_test.py" />
-        <option value="$PROJECT_DIR$/model/biDAF.py" />
         <option value="$PROJECT_DIR$/utils/ensemble_record.py" />
         <option value="$PROJECT_DIR$/train.py" />
         <option value="$PROJECT_DIR$/model/MwAN_full.py" />
         <option value="$PROJECT_DIR$/model/R_Net.py" />
+        <option value="$PROJECT_DIR$/model/biDAF.py" />
       </list>
     </option>
   </component>
@@ -249,6 +261,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -293,6 +308,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -382,13 +400,6 @@
     <entry file="file://C:/Program Files/Anaconda3/envs/ten1.9/Lib/site-packages/tensorflow/nn/__init__.py" />
     <entry file="file://$PROJECT_DIR$/model/tensor_test.py" />
     <entry file="file://C:/Program Files/Anaconda3/envs/ten1.9/Lib/site-packages/tensorflow/python/ops/gen_array_ops.py" />
-    <entry file="file://$PROJECT_DIR$/model/biDAF.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/utils.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -417,8 +428,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="147" column="9" selection-start-line="147" selection-start-column="9" selection-end-line="147" selection-end-column="9" />
+        <state relative-caret-position="461">
+          <caret line="154" column="4" selection-start-line="154" selection-start-column="4" selection-end-line="154" selection-end-column="4" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -427,8 +438,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/MwAN_full.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="322" column="76" selection-start-line="322" selection-start-column="76" selection-end-line="322" selection-end-column="76" />
+        <state relative-caret-position="378">
+          <caret line="80" column="8" selection-start-line="80" selection-start-column="8" selection-end-line="84" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -437,8 +448,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/R_Net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="227" column="76" selection-start-line="227" selection-start-column="76" selection-end-line="227" selection-end-column="76" />
+        <state relative-caret-position="218">
+          <caret line="83" selection-start-line="83" selection-end-line="83" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/biDAF.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
