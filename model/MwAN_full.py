@@ -320,7 +320,7 @@ class MwAN:
             a_output=tf.reshape(a_output,[opts["batch"],3,-1]) # (b,3,h)
             # 结合encoder_out与answer
             score = tf.matmul(a_output,tf.transpose(encoder_out,perm=[0,2,1])) # (b,3,h) batch* (b,h,1) => (b,3,1)
-            score = tf.nn.softmax(tf.squeeze(score),axis=1) # (b,3)
+            score = tf.nn.softmax(tf.squeeze(score),axis=1,name="prediction") # (b,3)
             print("socre: {}".format(score))
 
 
