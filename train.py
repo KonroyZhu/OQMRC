@@ -152,6 +152,7 @@ if __name__ == '__main__':
     for epoch in range(opts["epoch"]):
         train_id, train_pred=train(epoch,sess,loss,optimizer,tensor_dict)
         acc,dev_id, dev_pred = test(predict,sess,tensor_dict)
+        print("epoch {} acc: {} best {}".format(epoch, acc, best))
         if acc > best:
             best = acc
             # with open(args.save, 'wb') as f: TODO: 如何保存tf模型
