@@ -11,7 +11,7 @@ from model.R_Net import R_Net
 from utils.ensemble_record import esm_record
 from utils.utils import shuffle_data, padding, pad_answer
 
-data_path="data/"
+data_path="dat/"
 # vocab_size=process_data(data_path=data_path,threshold=5)
 vocab_size = 98745
 
@@ -23,7 +23,7 @@ with open(data_path + 'testa.pickle', 'rb') as f:
     test_data = pickle.load(f)
 dev_data = sorted(dev_data, key=lambda x: len(x[1]))
 opts=json.load(open("model/config.json"))
-print('train data size {:d}, dev data size {:d}, testa data size {:d}'.format(len(train_data), len(dev_data),len(test_data)))
+print('train dat size {:d}, dev dat size {:d}, testa dat size {:d}'.format(len(train_data), len(dev_data),len(test_data)))
 
 
 def test_trainer(epoch,session,test_op ,tensor_dict):
@@ -43,7 +43,7 @@ def test_trainer(epoch,session,test_op ,tensor_dict):
             tensor_dict["q"]: query,
             tensor_dict["a"]: answer
         }
-        print("data idx: {} ".format(i))
+        print("dat idx: {} ".format(i))
         l = 0
         try:
             t_op = session.run(test_op, feed_dict=fd)
@@ -87,7 +87,7 @@ def train(epoch,session,loss,optimizer,tensor_dict):
             tensor_dict["q"]:query,
             tensor_dict["a"]:answer
         }
-        print("data idx: {} ".format(i))
+        print("dat idx: {} ".format(i))
         l=0
         try:
             _,l,p = session.run([optimizer,loss,predict],feed_dict=fd)
