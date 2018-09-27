@@ -116,7 +116,7 @@ def test(pred,session,tensor_dict):
         p = session.run([pred], feed_dict=fd)
         r=0
         for item in p:
-            if item == 0:
+            if np.argmax(item) == 0:
                 r+=1
         a += len(one)
     return r * 100.0 / a
