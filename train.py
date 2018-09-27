@@ -155,6 +155,7 @@ if __name__ == '__main__':
         print("epoch {} acc: {} best {}".format(epoch, acc, best))
         if acc > best:
             best = acc
+            print("saving...")
             # with open(args.save, 'wb') as f: TODO: 如何保存tf模型
             #     torch.save(model, f)save
             saver.save(sess,save_path="net/model.ckpt") # save方法自带刷新功能
