@@ -8,6 +8,7 @@ import tensorflow as tf
 import pickle
 
 from model.R_Net import R_Net
+from utils.ensemble_record import esm_record
 from utils.utils import shuffle_data, padding, pad_answer
 
 data_path="data/"
@@ -72,11 +73,14 @@ def train(epoch,session,loss,optimizer,tensor_dict):
     data = shuffle_data(train_data, 1)
     total_loss = 0.0
     exception=[]
+    id_list=[] # 用于记录ensemble所需的数据
+    pred_list=[]
     for num, i in enumerate(range(0, len(data), opts["batch"])):
         one = data[i:i + opts["batch"]]
         query, _ = padding([x[0] for x in one], max_len=opts["q_len"])
         passage, _ = padding([x[1] for x in one], max_len=opts["p_len"])
         answer = pad_answer([x[2] for x in one],max_len=opts["alt_len"])
+        ids = [int(c[3]) for c in one]
         # query, passage, answer = np.array(query), np.array(passage), np.array(answer)
         fd={
             tensor_dict["p"]:passage,
@@ -86,7 +90,9 @@ def train(epoch,session,loss,optimizer,tensor_dict):
         print("data idx: {} ".format(i))
         l=0
         try:
-            _,l = session.run([optimizer,loss],feed_dict=fd)
+            _,l,p = session.run([optimizer,loss,predict],feed_dict=fd)
+            id_list=id_list+ids
+            pred_list=pred_list+p
         except Exception as e:
             print('Error:', e)
             print("id: {} query: {}, passage {}, answer {}".format(i, np.shape(query), np.shape(passage),
@@ -99,14 +105,18 @@ def train(epoch,session,loss,optimizer,tensor_dict):
                                                                                    i * 100.0 / len(data)))
     print("exception ids: {}".format(" ".join(exception)))
     total_loss = 0
+    return id_list,pred_list
 
 def test(pred,session,tensor_dict):
     r, a = 0.0, 0.0
+    id_list = []  # 用于记录ensemble所需的数据
+    pred_list = []
     for i in range(0, len(dev_data),opts["batch"]):
         one = dev_data[i:i +opts["batch"]]
         query, _ = padding([x[0] for x in one], max_len=opts["q_len"])
         passage, _ = padding([x[1] for x in one], max_len=opts["p_len"])
         answer = pad_answer([x[2] for x in one],max_len=opts["alt_len"])
+        ids = [int(c[3]) for c in one]
         # query, passage, answer = np.array(query), np.array(passage), np.array(answer)
         fd = {
             tensor_dict["p"]: passage,
@@ -114,12 +124,14 @@ def test(pred,session,tensor_dict):
             tensor_dict["a"]: answer
         }
         p = session.run([pred], feed_dict=fd)
+        id_list = id_list + ids
+        pred_list = pred_list + p
         r=0
         for item in p:
             if np.argmax(item) == 0:
                 r+=1
         a += len(one)
-    return r * 100.0 / a
+    return r * 100.0 / a,id_list,pred_list
 
 if __name__ == '__main__':
     model=MwAN()
@@ -133,18 +145,20 @@ if __name__ == '__main__':
     acc=0
     # 储存
     saver=tf.train.Saver()
-    # """ 用于切换测试与运行模式
+    """ 用于切换测试与运行模式
     print("正在测试feed_dict输入数据...")
     test_trainer(epoch, sess, test_op, tensor_dict)
     """
     for epoch in range(opts["epoch"]):
-        train(epoch,sess,loss,optimizer,tensor_dict)
-        acc = test(predict,sess,tensor_dict)
+        train_id, train_pred=train(epoch,sess,loss,optimizer,tensor_dict)
+        acc,dev_id, dev_pred = test(predict,sess,tensor_dict)
         if acc > best:
             best = acc
             # with open(args.save, 'wb') as f: TODO: 如何保存tf模型
             #     torch.save(model, f)save
             saver.save(sess,save_path="net/model.ckpt") # save方法自带刷新功能
+            esm_record(id_list=train_id, pred_list=train_pred, path="esm_record/train.pkl")
+            esm_record(id_list=dev_id, pred_list=dev_pred, path="esm_record/dev.pkl")
 
     print('epcoh {:d} dev acc is {:f}, best dev acc {:f}'.format(epoch, acc, best))
     # """
