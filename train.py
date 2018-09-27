@@ -91,8 +91,12 @@ def train(epoch,session,loss,optimizer,tensor_dict):
         l=0
         try:
             _,l,p = session.run([optimizer,loss,predict],feed_dict=fd)
-            id_list=id_list+ids
-            pred_list=pred_list+p
+            if id_list == []: # Error: 'NoneType' object has no attribute 'extend' FIXME
+                id_list = ids
+                pred_list = p
+            else:
+                id_list = id_list.extend(ids)
+                pred_list = pred_list.extend(p)
         except Exception as e:
             print('Error:', e)
             print("id: {} query: {}, passage {}, answer {}".format(i, np.shape(query), np.shape(passage),
@@ -124,8 +128,12 @@ def test(pred,session,tensor_dict):
             tensor_dict["a"]: answer
         }
         p = session.run([pred], feed_dict=fd)
-        id_list = id_list + ids
-        pred_list = pred_list + p
+        if id_list == []: #Error: 'NoneType' object has no attribute 'extend' Fixme
+            id_list=ids
+            pred_list=p
+        else:
+            id_list = id_list.extend(ids)
+            pred_list = pred_list.extend(p)
         r=0
         for item in p:
             if np.argmax(item) == 0:
