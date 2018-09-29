@@ -91,12 +91,12 @@ def train(epoch,session,loss,optimizer,tensor_dict):
         l=0
         try:
             _,l,p = session.run([optimizer,loss,predict],feed_dict=fd)
-            if id_list == []: # Error: 'NoneType' object has no attribute 'extend' FIXME
-                id_list = list(ids)
-                pred_list = list(p)
-            else:
-                id_list = id_list.extend(ids)
-                pred_list = pred_list.extend(p)
+            # 储存q_id与预测答案下标
+            p=list(p)
+            ids=list(ids)
+            id_list.extend(ids)
+            pred_list.extend(p)
+
         except Exception as e:
             print('Error:', e)
             print("id: {} query: {}, passage {}, answer {}".format(i, np.shape(query), np.shape(passage),
@@ -127,19 +127,20 @@ def test(pred,session,tensor_dict):
             tensor_dict["q"]: query,
             tensor_dict["a"]: answer
         }
-        p = session.run([pred], feed_dict=fd)
-        if id_list == []: #Error: 'NoneType' object has no attribute 'extend' Fixme
-            id_list=list(ids)
-            pred_list=list(p)
-        else:
-            id_list = id_list.extend(ids)
-            pred_list = pred_list.extend(p)
+        p = session.run(pred, feed_dict=fd)
+
+        # 储存q_id与预测答案下标
+        p = list(p)
+        ids = list(ids)
+        id_list.extend(ids)
+        pred_list.extend(p)
+
         r=0
         for item in p:
             if np.argmax(item) == 0:
                 r+=1
         a += len(one)
-    return r * 100.0 / a,id_list,pred_list
+    return r * 100.0 / a ,id_list,pred_list
 
 if __name__ == '__main__':
     model=MwAN()

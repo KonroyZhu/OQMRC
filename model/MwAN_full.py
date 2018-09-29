@@ -78,10 +78,11 @@ class MwAN:
         opts=self.opts
 
         # placeholder
-        #FIXME: batch should be changed to None
-        query=tf.placeholder(dtype=tf.int32,shape=[opts["batch"],opts["q_len"]],name="query")
-        para =tf.placeholder(dtype=tf.int32,shape=[opts["batch"],opts["p_len"]],name="para")
-        ans  =tf.placeholder(dtype=tf.int32,shape=[opts["batch"],3,opts["alt_len"]],name="ans") # 每个ans中有三个小句，第一句为正确答案 FIXME: alt_len should be None
+        # FIXME: batch should be changed to None
+        query = tf.placeholder(dtype=tf.int32, shape=[opts["batch"], opts["q_len"]], name="query")
+        para = tf.placeholder(dtype=tf.int32, shape=[opts["batch"], opts["p_len"]], name="para")
+        ans = tf.placeholder(dtype=tf.int32, shape=[opts["batch"], 3, opts["alt_len"]],
+                             name="ans")  # 每个ans中有三个小句，第一句为正确答案 FIXME: alt_len should be None
 
         # embedding
         with tf.variable_scope("Embedding_Encoding_Layer"):
@@ -320,30 +321,32 @@ class MwAN:
             a_output=tf.reshape(a_output,[opts["batch"],3,-1]) # (b,3,h)
             # 结合encoder_out与answer
             score = tf.matmul(a_output,tf.transpose(encoder_out,perm=[0,2,1])) # (b,3,h) batch* (b,h,1) => (b,3,1)
-            score = tf.nn.softmax(tf.squeeze(score),axis=1,name="prediction") # (b,3)
+            score = tf.nn.softmax(tf.squeeze(score),axis=1,name="score") # (b,3)
             print("socre: {}".format(score))
 
 
-            print("complying...")
-            print("loss...")
-            loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.constant([[1,0,0] for _ in range(opts["batch"])]),logits=score))
-            print("optimizer...")
-            optimizer = tf.train.AdamOptimizer().minimize(loss)
-            print("predict..")
-            predict=tf.argmax(score)
-            print("dict...")
+        print("complying...")
+        print("loss...")
+        loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.constant([[1,0,0] for _ in range(opts["batch"])]),logits=score))
+        print("optimizer...")
+        optimizer = tf.train.AdamOptimizer(name="opt").minimize(loss)
+        print("opt: {}".format(optimizer))
+        print("predict..")
+        predict = tf.argmax(score, axis=1,name="pred")  # (10,1)
+        print("pred: {}".format(predict))
+        print("dict...")
 
-            test_q=tf.squeeze(query[:,0])
-            test_p=tf.squeeze(para[:,0])
-            test_a=tf.squeeze(ans[:,0,0])
-            test_op=[test_p,test_a,test_q]
-            print("test_op(用于快速测试feed_dict): {}".format(test_op))
+        test_q=tf.squeeze(query[:,0])
+        test_p=tf.squeeze(para[:,0])
+        test_a=tf.squeeze(ans[:,0,0])
+        test_op=[test_p,test_a,test_q]
+        print("test_op(用于快速测试feed_dict): {}".format(test_op))
 
-            tensor_dict={
-                "q" : query,
-                "p" : para,
-                "a" : ans
-            }
-            return  loss,optimizer,predict,tensor_dict,test_op
+        tensor_dict={
+            "q" : query,
+            "p" : para,
+            "a" : ans
+        }
+        return  loss,optimizer,predict,tensor_dict,test_op
 
 

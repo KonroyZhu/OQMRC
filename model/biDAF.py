@@ -16,4 +16,3 @@ class BiDAF():
         para = tf.placeholder(dtype=tf.int32, shape=[opts["batch"], opts["p_len"]], name="para")
         ans = tf.placeholder(dtype=tf.int32, shape=[opts["batch"], 3, opts["alt_len"]],
                              name="ans")  # 每个ans中有三个小句，第一句为正确答案 FIXME: alt_len should be None
-
