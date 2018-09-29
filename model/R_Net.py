@@ -233,6 +233,7 @@ class R_Net:
         print("loss...")
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(
             labels=tf.constant([[1, 0, 0] for _ in range(opts["batch"])]), logits=score))
+        print(loss)
         print("optimizer...")
         optimizer = tf.train.AdamOptimizer(name="opt").minimize(loss)
         print("opt: {}".format(optimizer))

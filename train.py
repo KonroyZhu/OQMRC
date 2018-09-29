@@ -112,10 +112,12 @@ def train(epoch,session,loss,optimizer,tensor_dict):
     return id_list,pred_list
 
 def test(pred,session,tensor_dict):
+    print("testing...")
     r, a = 0.0, 0.0
     id_list = []  # 用于记录ensemble所需的数据
     pred_list = []
     for i in range(0, len(dev_data),opts["batch"]):
+        print("calculating {} in {}...".format(i,len(dev_data)))
         one = dev_data[i:i +opts["batch"]]
         query, _ = padding([x[0] for x in one], max_len=opts["q_len"])
         passage, _ = padding([x[1] for x in one], max_len=opts["p_len"])
@@ -143,8 +145,8 @@ def test(pred,session,tensor_dict):
     return r * 100.0 / a ,id_list,pred_list
 
 if __name__ == '__main__':
-    model=MwAN()
-    # model = R_Net()
+    # model=MwAN()
+    model = R_Net()
     loss, optimizer, predict, tensor_dict, test_op = model.build()
 
     best = 0.0
