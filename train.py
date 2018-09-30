@@ -23,7 +23,7 @@ with open(data_path + 'dev.pickle', 'rb') as f:
 with open(data_path + 'testa.pickle', 'rb') as f:
     test_data = pickle.load(f)
 dev_data = sorted(dev_data, key=lambda x: len(x[1]))
-opts=json.load(open("model/config.json"))
+opts=json.load(open("model/aichallenger_config.json"))
 print('train data size {:d}, dev data size {:d}, testa data size {:d}'.format(len(train_data), len(dev_data),len(test_data)))
 
 

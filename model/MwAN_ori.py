@@ -2,7 +2,7 @@ import math
 
 import tensorflow as tf
 import json
-
+import tensorflow.contrib as tc
 class MwAN_ori:
 
     def weight_matmul(self, mat, weight):
@@ -19,7 +19,7 @@ class MwAN_ori:
         return tf.reshape(mul, shape=[m_s[0], m_s[1], w_s[-1]])
 
     def __init__(self):
-        self.opts = json.load(open("model/config.json"))
+        self.opts = json.load(open("model/aichallenger_config.json"))
         opts = self.opts
 
 
@@ -28,7 +28,7 @@ class MwAN_ori:
 
         # self.a_attention = nn.Linear(embedding_size, 1, bias=False)
         stdv = 1. / math.sqrt(opts["embedding_size"])
-        self.a_attention = tf.Variable(tf.random_uniform(minval=-stdv,maxval=stdv,shape=[opts["embedding_size"],1]))
+        self.a_attention = tf.Variable(tf.random_uniform(minval=-stdv, maxval=stdv, shape=[opts["embedding_size"], 1]))
 
         # Concat Attention
         # self.Wc1 = nn.Linear(2 * encoder_size, encoder_size, bias=False)
@@ -92,8 +92,8 @@ class MwAN_ori:
         print("layer1: encoding layer")
         with tf.variable_scope("a_encoding"):
             print("a encoding...")
-            cell_fw_a = tf.nn.rnn_cell.GRUCell(num_units=opts["hidden_size"]/2)
-            cell_bw_a = tf.nn.rnn_cell.GRUCell(num_units=opts["hidden_size"]/2)
+            cell_fw_a = tc.rnn.MultiRNNCell([tc.rnn.GRUCell(num_units=opts["hidden_size"]/2) for _ in range(1)])
+            cell_bw_a = tc.rnn.MultiRNNCell([tc.rnn.GRUCell(num_units=opts["hidden_size"]/2) for _ in range(1)])
             a_embeddings_r=tf.reshape(a_embeddings,shape=[-1,opts["alt_len"],opts["embedding_size"]]) # (3b,a,d)
             a_encoder,_=tf.nn.bidirectional_dynamic_rnn(cell_fw_a,cell_bw_a,a_embeddings_r,dtype=tf.float32)
             a_encoder=tf.concat(a_encoder,axis=2) # (3b,a,h)
@@ -106,8 +106,8 @@ class MwAN_ori:
 
         with tf.variable_scope("qp_encoding"):
             print("pp encoding...")
-            cell_fw=tf.nn.rnn_cell.GRUCell(num_units=opts["hidden_size"])
-            cell_bw=tf.nn.rnn_cell.GRUCell(num_units=opts["hidden_size"])
+            cell_fw=tc.rnn.MultiRNNCell([tc.rnn.GRUCell(num_units=opts["hidden_size"]) for _ in range(1)])
+            cell_bw=tc.rnn.MultiRNNCell([tc.rnn.GRUCell(num_units=opts["hidden_size"]) for _ in range(1)])
 
             # hq, _ = self.q_encoder(p_embedding)
             # hq = F.dropout(hq, self.drop_out)
@@ -196,8 +196,8 @@ class MwAN_ori:
             # aggregation = torch.cat([hp, qts, qtc, qtd, qtb, qtm], 2)
             aggregation=tf.concat([hp,qts,qts,qtd,qtb,qtm],2)
             # self.gru_agg = nn.GRU(12 * encoder_size, encoder_size, batch_first=True, bidirectional=True)
-            fw_cell=tf.nn.rnn_cell.GRUCell(num_units=opts["hidden_size"])
-            bw_cell=tf.nn.rnn_cell.GRUCell(num_units=opts["hidden_size"])
+            fw_cell=tc.rnn.MultiRNNCell([tc.rnn.GRUCell(num_units=opts["hidden_size"]) for _ in range(1)])
+            bw_cell=tc.rnn.MultiRNNCell([tc.rnn.GRUCell(num_units=opts["hidden_size"]) for _ in range(1)])
             # aggregation_representation, _ = self.gru_agg(aggregation)
             aggregation_representation,_ =tf.nn.bidirectional_dynamic_rnn(fw_cell,bw_cell,aggregation,dtype=tf.float32)
             aggregation_representation=tf.concat(aggregation_representation,axis=2)

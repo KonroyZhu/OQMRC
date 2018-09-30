@@ -31,7 +31,7 @@ class MwAN:
         return tf.Variable(tf.truncated_normal(shape=[dim]), name=name)
 
     def __init__(self):
-        self.opts=json.load(open("model/config.json"))
+        self.opts=json.load(open("model/aichallenger_config.json"))
         opts=self.opts
         self.embedding_matrix=self.random_weight(dim_in=opts["vocab_size"],dim_out=opts["embedding_size"])
 

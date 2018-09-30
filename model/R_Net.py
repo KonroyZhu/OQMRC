@@ -33,7 +33,7 @@ class R_Net:
     def __init__(self):
 
 
-        self.opts=json.load(open("model/config.json"))
+        self.opts=json.load(open("model/aichallenger_config.json"))
         opts=self.opts
         self.embedding_matrix=self.random_weight(dim_in=opts["vocab_size"],dim_out=opts["embedding_size"])
 
