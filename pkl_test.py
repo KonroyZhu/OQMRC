@@ -5,7 +5,4 @@
 # print(len(train_obj.keys()))
 # for key in train_obj.keys():
 #     print(key,train_obj[key])
-from model.MwAN_ori import MwAN_ori
 
-model=MwAN_ori()
-model.build()

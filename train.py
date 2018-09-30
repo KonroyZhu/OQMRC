@@ -7,6 +7,7 @@ from model.MwAN_full import MwAN
 import tensorflow as tf
 import pickle
 
+from model.MwAN_ori import MwAN_ori
 from model.R_Net import R_Net
 from utils.ensemble_record import esm_record
 from utils.utils import shuffle_data, padding, pad_answer
@@ -146,7 +147,8 @@ def test(pred,session,tensor_dict):
 
 if __name__ == '__main__':
     # model=MwAN()
-    model = R_Net()
+    # model = R_Net()
+    model = MwAN_ori()
     loss, optimizer, predict, tensor_dict, test_op = model.build()
 
     best = 0.0
